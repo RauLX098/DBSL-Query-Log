@@ -1,0 +1,94 @@
+1.Create a table employee with ( emp_no, emp_name, emp_address) 
+
+  create table EMPLOYEE(
+   emp_no number (10),
+   emp_name varchar (30),
+   emp_address varchar (50));
+
+  Table created.
+
+2.Insert five employees information. 
+
+   INSERT INTO EMPLOYEE VALUES(100,'Rahul','Manipal');
+  1 row created.
+   INSERT INTO EMPLOYEE VALUES(101,'Mehul','Mumbai');
+  1 row created.
+   INSERT INTO EMPLOYEE VALUES(102,'Akki','Goa');
+  1 row created.
+   INSERT INTO EMPLOYEE VALUES(103,'Suraj','Manipal');
+  1 row created.
+   INSERT INTO EMPLOYEE VALUES(104,'Yohan','Mangalore');
+  1 row created.
+
+
+3.Display names of all employees. 
+
+   SELECT emp_name FROM EMPLOYEE;
+  
+  EMP_NAME
+  ------------------------------
+  Rahul
+  Mehul
+  Akki
+  Suraj
+  Yohan
+
+4.Display all the employees from ‘MANIPAL’.
+
+   SELECT emp_name FROM EMPLOYEE WHERE emp_address='Manipal';
+  
+  EMP_NAME
+  ------------------------------
+  Rahul
+  Suraj
+
+5.Add a column named salary to employee table.
+
+   ALTER TABLE EMPLOYEE ADD(salary number(10,3));
+  Table altered.
+
+6.Assign the salary for all employees. 
+
+   UPDATE EMPLOYEE SET salary=10000.000 WHERE emp_no='100';
+  1 row updated.
+   UPDATE EMPLOYEE SET salary=11000.000 WHERE emp_no='101';
+  1 row updated.
+   UPDATE EMPLOYEE SET salary=12000.000 WHERE emp_no='102';
+  1 row updated.
+   UPDATE EMPLOYEE SET salary=13000.000 WHERE emp_no='103';
+  1 row updated.
+   UPDATE EMPLOYEE SET salary=14000.000 WHERE emp_no='104';
+  1 row updated.
+
+7.View the structure of the table employee using describe.
+
+   DESC EMPLOYEE;
+
+  Name                                                                                  Null?    Type
+   -----------------------------------------------------------------------------------------------------------------       
+  EMP_NO                                                                                 NUMBER(10)
+  EMP_NAME                                                                               VARCHAR2(30)
+  EMP_ADDRESS                                                                            VARCHAR2(50)
+  SALARY                                                                                 NUMBER(10,3)
+
+8.Delete all the employees from ‘MANGALORE’
+
+   DELETE from EMPLOYEE WHERE emp_address='Mangalore';
+
+  1 row deleted.
+
+9.Rename employee as employee1. 
+
+   RENAME EMPLOYEE to EMPLOYEE1;
+
+  Table renamed.
+
+10.Drop the table employee1.
+
+   DROP table EMPLOYEE1;
+
+  Table dropped.
+   
+ 
+  
+   

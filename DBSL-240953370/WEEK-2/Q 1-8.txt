@@ -1,0 +1,226 @@
+Q 1-8:
+1.
+
+SQL> CREATE TABLE EMPLOYEE(
+  2  EMPNO NUMBER(5) PRIMARY KEY,
+  3  EMPNAME VARCHAR(50) NOT NULL,
+  4  GENDER CHAR(1) CHECK (GENDER IN ('M','F')),
+  5  SALARY NUMBER(10) NOT NULL,
+  6  ADDRESS VARCHAR(100) NOT NULL,
+  7  DNO NUMBER(5));
+
+Table created.
+--------------------------------------------------------------------------------
+SQL> DESC EMPLOYEE;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER(5)
+ EMPNAME                                   NOT NULL VARCHAR2(50)
+ GENDER                                             CHAR(1)
+ SALARY                                    NOT NULL NUMBER(10)
+ ADDRESS                                   NOT NULL VARCHAR2(100)
+ DNO                                                NUMBER(5)
+
+2.
+
+
+SQL> CREATE TABLE DEPARTMENT(
+  2  DEPTNO NUMBER(5) PRIMARY KEY,
+  3  DEPTNAME VARCHAR(50) UNIQUE NOT NULL,
+  4  LOCATION VARCHAR(50));
+
+Table created.
+---------------------------------------------------------------------------------
+SQL> DESC DEPARTMENT;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- -----------------------------
+ DEPTNO                                    NOT NULL NUMBER(5)
+ DEPTNAME                                  NOT NULL VARCHAR2(50)
+ LOCATION                                           VARCHAR2(50)
+
+
+3.
+
+SQL> ALTER TABLE EMPLOYEE ADD CONSTRAINT FK_DEPT FOREIGN KEY (DNO)
+  2  REFERENCES DEPARTMENT(DEPTNO);
+
+Table altered.
+
+4.
+
+SQL> INSERT INTO DEPARTMENT VALUES(10, 'HR', 'MUMBAI');
+
+1 row created.
+
+SQL> INSERT INTO DEPARTMENT VALUES(20, 'IT', 'DEHLI');
+
+1 row created.
+
+SQL> INSERT INTO DEPARTMENT VALUES(30, 'SALES', 'BANGALORE');
+
+1 row created.
+
+SQL> INSERT INTO EMPLOYEE VALUES(101, 'ALICE', 'F', 50000, 'DEHLI', 20);
+
+1 row created.
+
+SQL> INSERT INTO EMPLOYEE VALUES(102, 'BOB', 'M', 45000, 'MUMBAI', 10);
+
+1 row created.
+
+SQL> INSERT INTO EMPLOYEE VALUES(103, 'CLARA', 'F', 55000, 'BANGALORE', 30);
+
+1 row created.
+
+-----------------------------------------------------------------------------------
+
+SQL> SELECT * FROM DEPARTMENT;
+
+    DEPTNO DEPTNAME
+---------- --------------------------------------------------
+LOCATION
+--------------------------------------------------
+        10 HR
+MUMBAI
+
+        20 IT
+DEHLI
+
+        30 SALES
+BANGALORE
+
+
+-----------------------------------------------------------------------------------
+
+SQL> SELECT * FROM EMPLOYEE;
+
+     EMPNO EMPNAME                                            G     SALARY
+---------- -------------------------------------------------- - ----------
+ADDRESS
+--------------------------------------------------------------------------------
+       DNO
+----------
+       101 ALICE                                              F      50000
+DEHLI
+        20
+
+       102 BOB                                                M      45000
+MUMBAI
+        10
+
+     EMPNO EMPNAME                                            G     SALARY
+---------- -------------------------------------------------- - ----------
+ADDRESS
+--------------------------------------------------------------------------------
+       DNO
+----------
+
+       103 CLARA                                              F      55000
+BANGALORE
+        30
+
+
+
+5.
+
+
+SQL> INSERT INTO EMPLOYEE VALUES (104, NULL, 'M', 40000, 'KOLKATA', 10);
+INSERT INTO EMPLOYEE VALUES (104, NULL, 'M', 40000, 'KOLKATA', 10)
+                                  *
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("CCEB29"."EMPLOYEE"."EMPNAME")
+
+
+SQL> INSERT INTO EMPLOYEE VALUES (105, 'DAVID', 'X', 40000, 'PUNE', 20);
+INSERT INTO EMPLOYEE VALUES (105, 'DAVID', 'X', 40000, 'PUNE', 20)
+*
+ERROR at line 1:
+ORA-02290: check constraint (CCEB29.SYS_C0011617) violated
+
+
+SQL> INSERT INTO EMPLOYEE VALUES (101, 'EVE', 'F', 40000, 'GOA', 10);
+INSERT INTO EMPLOYEE VALUES (101, 'EVE', 'F', 40000, 'GOA', 10)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (CCEB29.SYS_C0011618) violated
+
+
+SQL> INSERT INTO EMPLOYEE VALUES (106, 'FRANK', 'M', 38000, 'JAIPUR', 99);
+INSERT INTO EMPLOYEE VALUES (106, 'FRANK', 'M', 38000, 'JAIPUR', 99)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (CCEB29.FK_DEPT) violated - parent key not
+found
+
+6.
+
+SQL> DELETE FROM DEPARTMENT WHERE DEPTNO = 10;
+DELETE FROM DEPARTMENT WHERE DEPTNO = 10
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (CCEB29.FK_DEPT) violated - child record found
+
+7.
+
+SQL> ALTER TABLE EMPLOYEE DROP CONSTRAINT FK_DEPT;
+
+Table altered.
+
+SQL> ALTER TABLE EMPLOYEE ADD CONSTRAINT FK_DEPT FOREIGN KEY (DNO)
+  2  REFERENCES DEPARTMENT (DEPTNO) ON DELETE CASCADE;
+
+Table altered.
+
+SQL> DELETE FROM DEPARTMENT WHERE DEPTNO = 30;
+
+1 row deleted.
+
+SQL> SELECT * FROM EMPLOYEE;
+
+     EMPNO EMPNAME                                            G     SALARY
+---------- -------------------------------------------------- - ----------
+ADDRESS
+--------------------------------------------------------------------------------
+       DNO
+----------
+       101 ALICE                                              F      50000
+DEHLI
+        20
+
+       102 BOB                                                M      45000
+MUMBAI
+        10
+
+     EMPNO EMPNAME                                            G     SALARY
+---------- -------------------------------------------------- - ----------
+ADDRESS
+--------------------------------------------------------------------------------
+       DNO
+----------
+
+
+8.
+
+
+SQL> ALTER TABLE EMPLOYEE MODIFY SALARY DEFAULT 10000;
+
+Table altered.
+
+SQL> INSERT INTO EMPLOYEE(EMPNO, EMPNAME, GENDER, ADDRESS, DNO) VALUES (108, 'HENRY', 'M', 'CHENNAI', 20);
+
+1 row created.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
