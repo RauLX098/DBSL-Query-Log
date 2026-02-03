@@ -101,3 +101,68 @@ SQL> SELECT s.name, c.title, sec.year
 no rows selected
 
 
+16.
+SELECT s.name, t.course_id AS c_name
+FROM student s
+JOIN takes t ON s.ID = t.ID
+WHERE t.year = 2015;
+
+17.
+SELECT name, salary AS inst_salary
+FROM instructor
+WHERE salary > (
+    SELECT MIN(salary)
+    FROM instructor
+    WHERE dept_name = 'CSE'
+);
+
+18.
+SELECT name
+FROM instructor
+WHERE dept_name LIKE '%ch%';
+
+19.
+SELECT name, LENGTH(name) AS name_length
+FROM student;
+
+20.
+SELECT dept_name, SUBSTRING(dept_name, 3, 3) AS sub_name
+FROM department;
+
+21.
+SELECT UPPER(name)
+FROM instructor;
+
+22.
+SELECT ID, name, COALESCE(tot_cred, 0) AS total_credits
+FROM student;
+
+23.
+SELECT salary,
+       ROUND(salary / 3, -2) AS rounded_salary
+FROM instructor;
+
+24.
+ALTER TABLE instructor
+ADD dob DATE;
+
+SELECT 
+    TO_CHAR(dob, 'DD-MON-YYYY') AS format1,
+    TO_CHAR(dob, 'DD-MON-YY')   AS format2,
+    TO_CHAR(dob, 'DD-MM-YY')    AS format3
+FROM instructor;
+
+
+25.
+SELECT name,
+       TO_CHAR(dob, 'YEAR') AS YEAR,
+       TO_CHAR(dob, 'Year') AS Year,
+       TO_CHAR(dob, 'year') AS year
+FROM instructor;
+
+
+
+
+
+
+
