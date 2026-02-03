@@ -1,0 +1,184 @@
+Week-4
+
+1.
+SELECT course_id, COUNT(ID) AS num_students
+FROM takes
+GROUP BY course_id;
+
+2.
+SELECT s.dept_name, AVG(course_count) AS avg_students
+FROM (
+    SELECT s.dept_name, t.course_id, COUNT(t.ID) AS course_count
+    FROM student s
+    JOIN takes t ON s.ID = t.ID
+    GROUP BY s.dept_name, t.course_id
+) AS dept_course
+GROUP BY dept_name
+HAVING AVG(course_count) > 10;
+
+3.
+SELECT dept_name, COUNT(course_id) AS total_courses
+FROM course
+GROUP BY dept_name;
+
+4.
+SELECT dept_name, AVG(salary) AS avg_salary
+FROM instructor
+GROUP BY dept_name
+HAVING AVG(salary) > 42000;
+
+5.
+SELECT course_id, sec_id, COUNT(ID) AS enrollment
+FROM takes
+WHERE semester = 'Spring' AND year = 2009
+GROUP BY course_id, sec_id;
+
+6.
+SELECT course_id, prereq_id
+FROM prereq
+ORDER BY course_id ASC;
+
+7.
+SELECT *
+FROM instructor
+ORDER BY salary DESC;
+
+8.
+SELECT MAX(total_salary) AS max_total_salary
+FROM (
+    SELECT dept_name, SUM(salary) AS total_salary
+    FROM instructor
+    GROUP BY dept_name
+) AS dept_salary;
+
+9.
+SELECT dept_name, AVG(salary) AS avg_salary
+FROM instructor
+GROUP BY dept_name
+HAVING AVG(salary) > 42000;
+
+10.
+SELECT course_id, sec_id
+FROM takes
+WHERE semester = 'Spring' AND year = 2010
+GROUP BY course_id, sec_id
+HAVING COUNT(ID) = (
+    SELECT MAX(enroll_count)
+    FROM (
+        SELECT COUNT(ID) AS enroll_count
+        FROM takes
+        WHERE semester = 'Spring' AND year = 2010
+        GROUP BY course_id, sec_id
+    ) AS temp
+);
+
+11.
+SELECT i.name
+FROM instructor i
+WHERE NOT EXISTS (
+    SELECT s.ID
+    FROM student s
+    WHERE s.dept_name = 'Comp. Sci.'
+    AND NOT EXISTS (
+        SELECT *
+        FROM teaches t
+        JOIN takes tk ON t.course_id = tk.course_id
+        WHERE t.ID = i.ID
+        AND tk.ID = s.ID
+    )
+);
+
+12.
+SELECT dept_name, AVG(salary) AS avg_salary
+FROM instructor
+GROUP BY dept_name
+HAVING AVG(salary) > 50000
+   AND COUNT(ID) > 5;
+
+13.
+WITH max_budget AS (
+    SELECT MAX(budget) AS max_bud
+    FROM department
+)
+SELECT dept_name, budget
+FROM department
+WHERE budget = (SELECT max_bud FROM max_budget);
+
+14.
+WITH dept_salary AS (
+    SELECT dept_name, SUM(salary) AS total_salary
+    FROM instructor
+    GROUP BY dept_name
+)
+SELECT dept_name
+FROM dept_salary
+WHERE total_salary > (
+    SELECT AVG(total_salary)
+    FROM dept_salary
+);
+
+15.
+SAVEPOINT before_transfer;
+
+UPDATE student
+SET dept_name = 'IT'
+WHERE dept_name = 'Comp. Sci.';
+
+-- To undo the change
+ROLLBACK TO before_transfer;
+
+16.
+
+SAVEPOINT before_salary_update;
+
+UPDATE instructor
+SET salary = salary * 1.03
+WHERE salary > 100000;
+
+UPDATE instructor
+SET salary = salary * 1.05
+WHERE salary <= 100000;
+
+-- Undo if needed
+ROLLBACK TO before_salary_update;
+ 
+Additional Exercises
+
+
+1.
+SELECT *
+FROM instructor i
+WHERE salary = (
+    SELECT MIN(salary)
+    FROM instructor
+    WHERE dept_name = i.dept_name
+);
+
+2.
+SELECT 
+    SUM(salary) AS total_salary,
+    MAX(salary) AS max_salary,
+    MIN(salary) AS min_salary,
+    AVG(salary) AS avg_salary
+FROM instructor
+WHERE dept_name = 'Comp. Sci.';
+
+3.
+SELECT s.name
+FROM student s
+WHERE NOT EXISTS (
+    SELECT c.course_id
+    FROM course c
+    WHERE c.dept_name = 'Comp. Sci.'
+    AND NOT EXISTS (
+        SELECT *
+        FROM takes t
+        WHERE t.ID = s.ID
+          AND t.course_id = c.course_id
+    )
+);
+
+
+
+
+
