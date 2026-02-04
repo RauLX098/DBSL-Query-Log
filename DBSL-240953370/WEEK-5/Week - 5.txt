@@ -1,0 +1,306 @@
+Week - 5
+
+1.
+
+SQL> SELECT Bdate, Address
+  2  FROM Employee
+  3  WHERE Fname = 'John'
+  4    AND Minit = 'B'
+  5    AND Lname = 'Smith';
+
+BDATE     ADDRESS
+--------- ------------------------------
+09-JAN-65 731 Fondren, Houston, TX
+
+SQL> SELECT E.Fname, E.Lname, E.Address
+  2  FROM Employee E, Department1 D
+  3  WHERE E.Dno = D.Dnumber
+  4    AND D.Dname = 'Research';
+
+FNAME           LNAME           ADDRESS
+--------------- --------------- ------------------------------
+John            Smith           731 Fondren, Houston, TX
+Franklin        Wong            638 Voss, Houston, TX
+Ramesh          Narayan         975 Fire Oak, Humble, TX
+Joyce           English         5631 Rice, Houston, TX
+
+2.
+
+SQL> SELECT P.Pnumber,
+  2         P.Dnum,
+  3         E.Lname,
+  4         E.Address,
+  5         E.Bdate
+  6  FROM Project P, Department1 D, Employee E
+  7  WHERE P.Dnum = D.Dnumber
+  8    AND D.Mgr_ssn = E.Ssn
+  9    AND P.Plocation = 'Stanford';
+
+no rows selected
+
+3.
+
+SQL> SELECT E.Fname AS Emp_Fname,
+  2         E.Lname AS Emp_Lname,
+  3         S.Fname AS Sup_Fname,
+  4         S.Lname AS Sup_Lname
+  5  FROM Employee E
+  6  LEFT JOIN Employee S
+  7  ON E.Super_ssn = S.Ssn;
+
+EMP_FNAME       EMP_LNAME       SUP_FNAME       SUP_LNAME
+--------------- --------------- --------------- ---------------
+Richard         Marini          Richard         Marini
+John            Smith           Franklin        Wong
+Ramesh          Narayan         Franklin        Wong
+Joyce           English         Franklin        Wong
+Alicia          Zelaya          Jennifer        Wallace
+Ahmad           Jabbar          Jennifer        Wallace
+Franklin        Wong            James           Borg
+Jennifer        Wallace         James           Borg
+James           Borg
+
+9 rows selected.
+
+4.
+
+SQL> SELECT DISTINCT P.Pnumber
+  2  FROM Project P
+  3  WHERE
+  4        P.Pnumber IN (
+  5            SELECT W.Pno
+  6            FROM Works_On W, Employee E
+  7            WHERE W.Essn = E.Ssn
+  8              AND E.Lname = 'Smith'
+  9        )
+ 10     OR
+ 11        P.Dnum IN (
+ 12            SELECT D.Dnumber
+ 13            FROM Department1 D, Employee E
+ 14            WHERE D.Mgr_ssn = E.Ssn
+ 15              AND E.Lname = 'Smith'
+ 16        );
+
+   PNUMBER
+----------
+         1
+         2
+
+
+
+
+5.
+
+SQL> SELECT E.Fname,
+  2         E.Lname,
+  3         E.Salary,
+  4         E.Salary * 1.10 AS Increased_Salary
+  5  FROM Employee E, Works_On W, Project P
+  6  WHERE E.Ssn = W.Essn
+  7    AND W.Pno = P.Pnumber
+  8    AND P.Pname = 'ProductX';
+
+FNAME           LNAME               SALARY INCREASED_SALARY
+--------------- --------------- ---------- ----------------
+John            Smith                30000            33000
+Joyce           English              25000            27500
+
+
+6.
+
+SQL> SELECT D.Dname,
+  2         E.Lname,
+  3         E.Fname,
+  4         P.Pname
+  5  FROM Employee E, Department1 D, Works_On W, Project P
+  6  WHERE E.Dno = D.Dnumber
+  7    AND E.Ssn = W.Essn
+  8    AND W.Pno = P.Pnumber
+  9  ORDER BY D.Dname, E.Lname, E.Fname;
+
+DNAME           LNAME           FNAME           PNAME
+--------------- --------------- --------------- ---------------
+Administration  Borg            James           Reorganization
+Administration  Jabbar          Ahmad           Computerization
+Administration  Jabbar          Ahmad           Newbenefits
+Administration  Wallace         Jennifer        Newbenefits
+Administration  Wallace         Jennifer        Reorganization
+Administration  Zelaya          Alicia          Newbenefits
+Administration  Zelaya          Alicia          Computerization
+Research        English         Joyce           ProductY
+Research        English         Joyce           ProductX
+Research        Narayan         Ramesh          ProductZ
+Research        Smith           John            ProductY
+
+DNAME           LNAME           FNAME           PNAME
+--------------- --------------- --------------- ---------------
+Research        Smith           John            ProductX
+Research        Wong            Franklin        Reorganization
+Research        Wong            Franklin        ProductZ
+Research        Wong            Franklin        ProductY
+Research        Wong            Franklin        Computerization
+
+16 rows selected.
+
+
+
+7.
+
+SQL> SELECT DISTINCT E.Fname, E.Lname
+  2  FROM Employee E, Dependent D
+  3  WHERE E.Ssn = D.Essn
+  4    AND E.Fname = D.Dependent_name
+  5    AND E.Sex = D.Sex;
+
+no rows selected
+
+
+8.
+
+SQL> SELECT Fname, Lname
+  2  FROM Employee
+  3  WHERE Ssn NOT IN
+  4  (
+  5    SELECT Essn FROM Dependent
+  6  );
+
+FNAME           LNAME
+--------------- ---------------
+Richard         Marini
+James           Borg
+Alicia          Zelaya
+Ahmad           Jabbar
+Joyce           English
+Ramesh          Narayan
+
+
+9.
+
+SQL> SELECT DISTINCT E.Fname, E.Lname
+  2  FROM Employee E, Department1 D, Dependent DP
+  3  WHERE E.Ssn = D.Mgr_ssn
+  4    AND E.Ssn = DP.Essn;
+
+FNAME           LNAME
+--------------- ---------------
+Franklin        Wong
+Jennifer        Wallace
+
+10.
+
+SQL> SELECT SUM(Salary) AS Total_Salary,
+  2         MAX(Salary) AS Max_Salary,
+  3         MIN(Salary) AS Min_Salary,
+  4         AVG(Salary) AS Avg_Salary
+  5  FROM Employee;
+
+TOTAL_SALARY MAX_SALARY MIN_SALARY AVG_SALARY
+------------ ---------- ---------- ----------
+      318000      55000      25000 35333.3333
+
+11.
+
+SQL> SELECT P.Pnumber,
+  2         P.Pname,
+  3         COUNT(W.Essn) AS Employee_Count
+  4  FROM Project P
+  5  LEFT JOIN Works_On W
+  6  ON P.Pnumber = W.Pno
+  7  GROUP BY P.Pnumber, P.Pname;
+
+   PNUMBER PNAME           EMPLOYEE_COUNT
+---------- --------------- --------------
+         2 ProductY                     3
+        30 Newbenefits                  3
+        20 Reorganization               3
+         1 ProductX                     2
+        10 Computerization              3
+         3 ProductZ                     2
+
+6 rows selected.
+
+12.
+
+SQL> SELECT P.Pnumber,
+  2         P.Pname,
+  3         COUNT(W.Essn) AS Employee_Count
+  4  FROM Project P, Works_On W
+  5  WHERE P.Pnumber = W.Pno
+  6  GROUP BY P.Pnumber, P.Pname
+  7  HAVING COUNT(W.Essn) > 2;
+
+   PNUMBER PNAME           EMPLOYEE_COUNT
+---------- --------------- --------------
+         2 ProductY                     3
+        30 Newbenefits                  3
+        20 Reorganization               3
+        10 Computerization              3
+
+13.
+
+
+
+SQL> SELECT D.Dnumber,
+  2         COUNT(E.Ssn) AS Employee_Count
+  3  FROM Department1 D, Employee E
+  4  WHERE D.Dnumber = E.Dno
+  5    AND E.Salary > 40000
+  6  GROUP BY D.Dnumber
+  7  HAVING COUNT(E.Ssn) > 5;
+
+no rows selected
+
+
+1.
+SQL> SELECT E.Fname, E.Lname
+  2  FROM Employee E
+  3  WHERE NOT EXISTS (
+  4      SELECT P.Pnumber
+  5      FROM Project P
+  6      WHERE P.Dnum = 5
+  7        AND NOT EXISTS (
+  8            SELECT *
+  9            FROM Works_On W
+ 10            WHERE W.Essn = E.Ssn
+ 11              AND W.Pno = P.Pnumber
+ 12        )
+ 13  );
+
+no rows selected
+
+2.
+
+SQL> SELECT Fname, Lname
+  2  FROM Employee
+  3  WHERE Salary > ANY (
+  4      SELECT Salary
+  5      FROM Employee E, Department1 D
+  6      WHERE E.Dno = D.Dnumber
+  7        AND D.Dname = 'Research'
+  8  );
+
+FNAME           LNAME
+--------------- ---------------
+Richard         Marini
+John            Smith
+Franklin        Wong
+Jennifer        Wallace
+Ramesh          Narayan
+James           Borg
+
+6 rows selected.
+
+3.
+
+
+SQL> SELECT COUNT(DISTINCT W.Essn) AS Total_Employees
+  2  FROM Works_On W, Project P
+  3  WHERE W.Pno = P.Pnumber
+  4    AND P.Pname = 'ProductX';
+
+TOTAL_EMPLOYEES
+---------------
+              2
+
+
+
