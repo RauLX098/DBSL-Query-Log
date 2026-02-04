@@ -288,6 +288,163 @@ SQL> CREATE VIEW department_total_salary AS
 View created.
 
 
+1.
+SQL> select distinct dept_name
+  2  from instructor
+  3  where dept_name is not null;
+
+DEPT_NAME
+--------------------
+Comp. Sci.
+Biology
+History
+Finance
+Elec. Eng.
+Music
+Physics
+
+7 rows selected.
+
+2.
+SQL> select i.name, t.course_id
+  2  from instructor i
+  3  join teaches t
+  4  on i.ID = t.ID;
+
+NAME                 COURSE_I
+-------------------- --------
+Srinivasan           CS-101
+Srinivasan           CS-315
+Srinivasan           CS-347
+Wu                   FIN-201
+Mozart               MU-199
+Einstein             PHY-101
+El Said              HIS-351
+Katz                 CS-101
+Katz                 CS-319
+Crick                BIO-101
+Crick                BIO-301
+
+NAME                 COURSE_I
+-------------------- --------
+Brandt               CS-190
+Brandt               CS-190
+Brandt               CS-319
+Kim                  EE-181
+
+15 rows selected.
+
+3.
+SQL> select i.name, t.course_id
+  2  from instructor i
+  3  inner join teaches t
+  4  on i.ID = t.ID
+  5  order by i.name;
+
+NAME                 COURSE_I
+-------------------- --------
+Brandt               CS-319
+Brandt               CS-190
+Brandt               CS-190
+Crick                BIO-301
+Crick                BIO-101
+Einstein             PHY-101
+El Said              HIS-351
+Katz                 CS-101
+Katz                 CS-319
+Kim                  EE-181
+Mozart               MU-199
+
+NAME                 COURSE_I
+-------------------- --------
+Srinivasan           CS-347
+Srinivasan           CS-315
+Srinivasan           CS-101
+Wu                   FIN-201
+
+15 rows selected.
+
+4.
+SQL> select
+  2    s.name as student_name,
+  3    s.dept_name as department_name,
+  4    i.name as advisor_name,
+  5    count(t.course_id) as courses_registered
+  6  from student s
+  7  left join advisor a
+  8    on s.ID = a.s_ID
+  9  left join instructor i
+ 10    on a.i_ID = i.ID
+ 11  left join takes t
+ 12    on s.ID = t.ID
+ 13  group by s.name, s.dept_name, i.name;
+
+STUDENT_NAME         DEPARTMENT_NAME      ADVISOR_NAME
+-------------------- -------------------- --------------------
+COURSES_REGISTERED
+------------------
+Aoi                  Elec. Eng.           Kim
+                 1
+
+Brandt               History
+                 1
+
+Shankar              IT                   Srinivasan
+                 4
+
+
+STUDENT_NAME         DEPARTMENT_NAME      ADVISOR_NAME
+-------------------- -------------------- --------------------
+COURSES_REGISTERED
+------------------
+Peltier              Physics              Einstein
+                 1
+
+Levy                 Physics              Einstein
+                 3
+
+Tanaka               Biology              Crick
+                 2
+
+
+STUDENT_NAME         DEPARTMENT_NAME      ADVISOR_NAME
+-------------------- -------------------- --------------------
+COURSES_REGISTERED
+------------------
+Zhang                IT                   Katz
+                 2
+
+Chavez               Finance              Singh
+                 1
+
+Williams             IT
+                 2
+
+
+STUDENT_NAME         DEPARTMENT_NAME      ADVISOR_NAME
+-------------------- -------------------- --------------------
+COURSES_REGISTERED
+------------------
+Brown                IT                   Katz
+                 2
+
+Sanchez              Music
+                 1
+
+Bourikas             Elec. Eng.           Kim
+                 2
+
+
+STUDENT_NAME         DEPARTMENT_NAME      ADVISOR_NAME
+-------------------- -------------------- --------------------
+COURSES_REGISTERED
+------------------
+Snow                 Physics
+                 0
+
+
+13 rows selected.
+
 
 
 
