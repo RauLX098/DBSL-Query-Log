@@ -287,6 +287,7 @@ SQL> CREATE VIEW department_total_salary AS
 
 View created.
 
+Additional Exercises
 
 1.
 SQL> select distinct dept_name
@@ -444,6 +445,7 @@ Snow                 Physics
 
 
 13 rows selected.
+
 
 
 
