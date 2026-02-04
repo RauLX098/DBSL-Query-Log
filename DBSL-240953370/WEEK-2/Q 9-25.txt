@@ -162,6 +162,62 @@ FROM instructor;
 
 
 
+Additional Exercises
+1.
+alter table employee
+add constraint chk_salary
+check (salary > 5000);
+
+2.
+select extract(quarter from date '2024-08-15') as quarter;
+
+3.
+select
+  floor(7384 / 3600) as hours,
+  floor((7384 % 3600) / 60) as minutes,
+  mod(7384, 60) as seconds;
+
+4.
+select extract(week from date '2024-08-15') as week_number;
+
+5.
+select distinct dept_name
+from instructor
+where dept_name is not null;
+
+6.
+select i.name, t.course_id
+from instructor i
+inner join teaches t
+on i.ID = t.ID;
+
+7.
+select i.name, t.course_id
+from instructor i
+left join teaches t
+on i.ID = t.ID
+order by i.name;
+
+8.
+select
+  s.name as student_name,
+  s.dept_name as department_name,
+  i.name as advisor_name,
+  count(t.course_id) as courses_registered
+from student s
+left join advisor a
+  on s.ID = a.s_ID
+left join instructor i
+  on a.i_ID = i.ID
+left join takes t
+  on s.ID = t.ID
+group by s.name, s.dept_name, i.name;
+
+
+
+
+
+
 
 
 
